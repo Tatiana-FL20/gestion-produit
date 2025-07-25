@@ -21,4 +21,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
 });
 
+Route::prefix('admin')->middleware('auth')->group(function () {
+    Route::resource('categories', \App\Http\Controllers\CategoryController::class);
+});
+
+
 require __DIR__.'/auth.php';
