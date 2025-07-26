@@ -3,11 +3,11 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Auth;
 
-class IsAdmin
+class AdminMiddleware
 {
     /**
      * Handle an incoming request.
@@ -20,6 +20,6 @@ class IsAdmin
             return $next($request);
         }
 
-        return redirect('/')->with('error', 'Accès interdit.');
+        abort(403); // ou redirect()->route('home');
     }
 }

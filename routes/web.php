@@ -1,9 +1,12 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
-use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\AdminMiddleware;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Frontend\CategoryController as PublicCategoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,14 +22,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/profile', Profile::class)->name('settings.profile');
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
+    
+    Route::get('/categories', [PublicCategoryController::class, 'index'])->name('categories.public');
 });
 
-Route::prefix('admin')->middleware('auth')->group(function () {
-    Route::resource('categories', \App\Http\Controllers\CategoryController::class);
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('categories', AdminCategoryController::class);
 });
 
-Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
-    Route::resource('categories', \App\Http\Controllers\CategoryController::class);
-});
+
+Route::get('/test-auth', function () {
+    return 'Tu es connecté !';
+})->middleware('auth');
 
 require __DIR__.'/auth.php';
